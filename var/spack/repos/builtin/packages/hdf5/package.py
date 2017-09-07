@@ -32,9 +32,9 @@ class Hdf5(AutotoolsPackage):
     flexible and efficient I/O and for high volume and complex data.
     """
 
-    homepage = "https://support.hdfgroup.org/HDF5/"
-    url      = "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hdf5-1.10.1.tar.gz"
-    list_url = "https://support.hdfgroup.org/ftp/HDF5/releases"
+    homepage = "http://support.hdfgroup.org/HDF5/"
+    url      = "http://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hdf5-1.10.1.tar.gz"
+    list_url = "http://support.hdfgroup.org/ftp/HDF5/releases"
     list_depth = 3
 
     version('1.10.1', '43a2f9466702fb1db31df98ae6677f15')
@@ -75,7 +75,7 @@ class Hdf5(AutotoolsPackage):
     conflicts('+threadsafe', when='+fortran')
 
     def url_for_version(self, version):
-        url = "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-{0}/hdf5-{1}/src/hdf5-{1}.tar.gz"
+        url = "http://support.hdfgroup.org/ftp/HDF5/releases/hdf5-{0}/hdf5-{1}/src/hdf5-{1}.tar.gz"
         return url.format(version.up_to(2), version)
 
     @property
