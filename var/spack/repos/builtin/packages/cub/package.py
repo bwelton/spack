@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2013-2017, Lawrence Livermore National Security, LLC.
+# Copyright (c) 2013-2016, Lawrence Livermore National Security, LLC.
 # Produced at the Lawrence Livermore National Laboratory.
 #
 # This file is part of Spack.
@@ -34,7 +34,7 @@ class Cub(Package):
 
     version('1.7.1', '028ac43922a4538596338ad5aef0f0c4')
     version('1.6.4', '924fc12c0efb17264c3ad2d611ed1c51')
-    version('1.4.1', '74a36eb84e5b5f0bf54aa3df39f660b2')
+    version('1.4.1', 'd2a303211f8f7ac73401627b7687b5e2')
 
     def install(self, spec, prefix):
         mkdirp(prefix.include)
