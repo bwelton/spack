@@ -28,9 +28,9 @@ from spack import *
 class Cmake(Package):
     """A cross-platform, open-source build system. CMake is a family of
        tools designed to build, test and package software."""
-    homepage = 'https://www.cmake.org'
-    url      = 'https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz'
-    list_url = 'https://cmake.org/files/'
+    homepage = 'http://www.cmake.org'
+    url      = 'http://cmake.org/files/v3.4/cmake-3.4.3.tar.gz'
+    list_url = 'http://cmake.org/files/'
     list_depth = 1
 
     version('3.9.0',    '180e23b4c9b55915d271b315297f6951')
@@ -83,7 +83,7 @@ class Cmake(Package):
 
     def url_for_version(self, version):
         """Handle CMake's version-based custom URLs."""
-        url = 'https://cmake.org/files/v{0}/cmake-{1}.tar.gz'
+        url = 'http://cmake.org/files/v{0}/cmake-{1}.tar.gz'
         return url.format(version.up_to(2), version)
 
     def bootstrap_args(self):
