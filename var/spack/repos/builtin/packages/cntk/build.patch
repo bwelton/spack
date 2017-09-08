@@ -1,7 +1,7 @@
-From 13ab743dd2d15b5e4a88c6280d56727947014d64 Mon Sep 17 00:00:00 2001
+From 3e336d2f7ead8ff47727f37bdab663d8a0215f3b Mon Sep 17 00:00:00 2001
 From: Benjamin Welton <welton@cs.wisc.edu>
-Date: Fri, 8 Sep 2017 15:38:49 -0400
-Subject: [PATCH] Third attempt to setup configure
+Date: Fri, 8 Sep 2017 15:51:54 -0400
+Subject: [PATCH] My squashed commits
 
 ---
  Makefile         |   69 +--
@@ -1418,7 +1418,7 @@ index 9c11800..c029091
 +bash ./configure.launch "$@"
 diff --git a/configure.launch b/configure.launch
 new file mode 100755
-index 0000000..b64ca2d
+index 0000000..c068198
 --- /dev/null
 +++ b/configure.launch
 @@ -0,0 +1,1386 @@
@@ -1465,7 +1465,7 @@ index 0000000..b64ca2d
 +
 +# Protocol buffers library
 +protobuf_path=
-+protobuf_check=lib/libprotobuf.a
++protobuf_check=lib64/libprotobuf.a
 +
 +# Multiverso library
 +multiverso_path=
