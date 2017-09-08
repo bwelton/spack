@@ -1,7 +1,7 @@
-From b323cab7faf56dfbeaf9928d2d44879f5e2ce696 Mon Sep 17 00:00:00 2001
+From e0c84724d375754003f55bd2c87ce4e2ffffbf43 Mon Sep 17 00:00:00 2001
 From: Benjamin Welton <welton@cs.wisc.edu>
-Date: Thu, 7 Sep 2017 21:52:35 -0400
-Subject: [PATCH 1/1] Temporary patch for CNTK
+Date: Fri, 8 Sep 2017 13:38:52 -0400
+Subject: [PATCH] Second attempt at patch
 
 ---
  Makefile  |  69 +++++++++++++++---------------
@@ -159,12 +159,12 @@ index cde0f34..f16250f 100644
  UNITTEST_MULTIVERSO := $(BINDIR)/multiversotests
  
 diff --git a/configure b/configure
-index 9c11800..d5ba636 100755
+index 9c11800..8630506 100755
 --- a/configure
 +++ b/configure
 @@ -1,4 +1,4 @@
 -#!/bin/bash
-+#!/lustre/atlas2/csc103/scratch/welton/local/sources/spack_git/opt/spack/cray-CNL-interlagos/gcc-4.9.3/bash-4.4-kq7ghfnrs3x2von4q5t63lalosbp7rrg/bin/bash
++#!bash
  #
  # Copyright (c) Microsoft. All rights reserved.
  #
