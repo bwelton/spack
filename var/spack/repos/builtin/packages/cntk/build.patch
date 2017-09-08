@@ -1,16 +1,15 @@
-From 6ee89684a8e7b509f977bab00573c73563df4bc6 Mon Sep 17 00:00:00 2001
-From: Jianwen WEI <weijianwen@gmail.com>
-Date: Wed, 5 Apr 2017 16:52:54 +0800
-Subject: [PATCH 1/1] Refine the build process to allow reuse pre-installed
- packages: multiverso 1bit-sgd kaldi openfst.
+From a7ba364cf8feb26c4f1d2464e2e3f029093147a1 Mon Sep 17 00:00:00 2001
+From: Benjamin Welton <welton@cs.wisc.edu>
+Date: Thu, 7 Sep 2017 21:39:40 -0400
+Subject: [PATCH] Changing bash for build system
 
 ---
  Makefile  |  69 +++++++++++++++---------------
- configure | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 178 insertions(+), 35 deletions(-)
+ configure | 143 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 176 insertions(+), 36 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 0586fd94b..bbd75e08c 100644
+index cde0f34..f16250f 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -25,14 +25,18 @@
@@ -33,7 +32,7 @@ index 0586fd94b..bbd75e08c 100644
  #   LIBZIP_PATH= path to libzip installation, so $(LIBZIP_PATH) exists
  #     defaults to /usr/local/
  #   BOOST_PATH= path to Boost installation, so $(BOOST_PATH)/include/boost/test/unit_test.hpp
-@@ -149,8 +153,8 @@ ifdef CUDA_PATH
+@@ -151,8 +155,8 @@ ifdef CUDA_PATH
  
  # Set up cuDNN if needed
    ifdef CUDNN_PATH
@@ -44,7 +43,7 @@ index 0586fd94b..bbd75e08c 100644
      LIBS_LIST += cudnn
      COMMON_FLAGS +=-DUSE_CUDNN
    endif
-@@ -188,16 +192,11 @@ ifeq ("$(MATHLIB)","openblas")
+@@ -194,16 +198,11 @@ ifeq ("$(MATHLIB)","openblas")
    CPPFLAGS += -DUSE_OPENBLAS
  endif
  
@@ -64,7 +63,7 @@ index 0586fd94b..bbd75e08c 100644
    KALDI_LIBS_LIST := kaldi-util kaldi-matrix kaldi-base kaldi-hmm kaldi-cudamatrix kaldi-nnet kaldi-lat
    KALDI_LIBS := $(addprefix -l,$(KALDI_LIBS_LIST))
  endif
-@@ -316,7 +315,7 @@ SRC += $(PP_SRC)
+@@ -320,7 +319,7 @@ SRC += $(PP_SRC)
  $(PERF_PROFILER_LIB): $(PP_OBJ)
  	@echo $(SEPARATOR)
  	@echo creating $@ for $(ARCH) with build type $(BUILDTYPE)
@@ -73,7 +72,7 @@ index 0586fd94b..bbd75e08c 100644
  	$(CXX) $(LDFLAGS) -shared $(patsubst %,$(RPATH)%, $(ORIGINDIR)) -o $@ $^
  
  
-@@ -920,17 +919,13 @@ endif
+@@ -974,17 +973,13 @@ endif
  
  ifeq ("$(CNTK_ENABLE_1BitSGD)","true")
  
@@ -93,7 +92,7 @@ index 0586fd94b..bbd75e08c 100644
  ########################################
  # ASGD(multiverso) setup
  ########################################
-@@ -938,13 +933,9 @@ endif
+@@ -992,13 +987,9 @@ endif
  
  ifeq ("$(CNTK_ENABLE_ASGD)","true")
  
@@ -108,7 +107,7 @@ index 0586fd94b..bbd75e08c 100644
  COMMON_FLAGS += -DASGD_PARALLEL_SUPPORT
  
  MULTIVERSO_LIB:=$(LIBDIR)/libmultiverso.so
-@@ -958,11 +949,16 @@ MULTIVERSO_CMAKE_BUILDTYPE=Debug
+@@ -1012,11 +1003,16 @@ MULTIVERSO_CMAKE_BUILDTYPE=Debug
  endif
  
  # TODO need to align Multiverso OpenMP with the one we use (libiomp). For now, disabled.
@@ -127,7 +126,7 @@ index 0586fd94b..bbd75e08c 100644
  	@cmake -DCMAKE_VERBOSE_MAKEFILE=TRUE \
  		-DCMAKE_CXX_COMPILER=$(CXX) \
  		-DOpenMP_CXX_FLAGS="" \
-@@ -976,17 +972,22 @@ $(MULTIVERSO_LIB):
+@@ -1030,17 +1026,22 @@ $(MULTIVERSO_LIB):
  		-DCMAKE_BUILD_TYPE=$(MULTIVERSO_CMAKE_BUILDTYPE) \
  		-B./Source/Multiverso/build/$(BUILDTYPE) -H./Source/Multiverso
  	@make VERBOSE=1 -C ./Source/Multiverso/build/$(BUILDTYPE) -j multiverso
@@ -160,10 +159,16 @@ index 0586fd94b..bbd75e08c 100644
  UNITTEST_MULTIVERSO := $(BINDIR)/multiversotests
  
 diff --git a/configure b/configure
-index 2c2e5cee7..c9c0072c9 100755
+index 9c11800..d5ba636 100755
 --- a/configure
 +++ b/configure
-@@ -41,6 +41,14 @@ boost_check=include/boost/test/unit_test.hpp
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/lustre/atlas2/csc103/scratch/welton/local/sources/spack_git/opt/spack/cray-CNL-interlagos/gcc-4.9.3/bash-4.4-kq7ghfnrs3x2von4q5t63lalosbp7rrg/bin/bash
+ #
+ # Copyright (c) Microsoft. All rights reserved.
+ #
+@@ -43,6 +43,14 @@ boost_check=include/boost/test/unit_test.hpp
  protobuf_path=
  protobuf_check=lib/libprotobuf.a
  
@@ -178,7 +183,7 @@ index 2c2e5cee7..c9c0072c9 100755
  # MPI library
  mpi_path=
  mpi_check=include/mpi.h
-@@ -49,6 +57,10 @@ have_kaldi=no
+@@ -56,6 +64,10 @@ have_kaldi=no
  kaldi_path=
  kaldi_check=src/kaldi.mk
  
@@ -189,7 +194,7 @@ index 2c2e5cee7..c9c0072c9 100755
  have_buildtype=no
  buildtype=
  default_buildtype=release
-@@ -67,7 +79,7 @@ cub_check=cub/cub.cuh
+@@ -74,7 +86,7 @@ cub_check=cub/cub.cuh
  
  have_cudnn=no
  cudnn_path=
@@ -198,7 +203,7 @@ index 2c2e5cee7..c9c0072c9 100755
  
  have_opencv=no
  opencv_path=
-@@ -112,6 +124,7 @@ default_boost="boost-1.60.0"
+@@ -122,6 +134,7 @@ default_boost="boost-1.60.0"
  default_cudas="cuda-8.0 cuda-7.5"
  default_nccls="nccl"
  default_kaldis="kaldi-trunk kaldi-c024e8aa"
@@ -206,7 +211,7 @@ index 2c2e5cee7..c9c0072c9 100755
  default_gdk_includes="include/nvidia/gdk"
  default_gdk_nvml_libs="src/gdk/nvml/lib"
  default_cubs="cub-1.4.1"
-@@ -121,6 +134,8 @@ default_protobuf="protobuf-3.1.0"
+@@ -131,6 +144,8 @@ default_protobuf="protobuf-3.1.0"
  default_libzips="libzip-1.1.2"
  default_swig="swig-3.0.10"
  default_mpi="mpi"
@@ -215,7 +220,7 @@ index 2c2e5cee7..c9c0072c9 100755
  
  function default_paths ()
  {
-@@ -178,6 +193,16 @@ function find_protobuf ()
+@@ -188,6 +203,16 @@ function find_protobuf ()
      find_dir "$default_protobuf" "$protobuf_check"
  }
  
@@ -232,7 +237,7 @@ index 2c2e5cee7..c9c0072c9 100755
  function find_nccl ()
  {
      find_dir "$default_nccls" "$nccl_check"
-@@ -193,6 +218,11 @@ function find_kaldi ()
+@@ -203,6 +228,11 @@ function find_kaldi ()
      find_dir "$default_kaldis" "$kaldi_check"
  }
  
@@ -244,7 +249,7 @@ index 2c2e5cee7..c9c0072c9 100755
  function find_gdk_include ()
  {
      find_dir "$default_gdk_includes" "$gdk_include_check"
-@@ -751,6 +784,46 @@ do
+@@ -825,6 +855,46 @@ do
                  fi
               fi
               ;;
@@ -291,7 +296,7 @@ index 2c2e5cee7..c9c0072c9 100755
          --with-buildtype*)
              have_buildtype=yes
              case $optarg in
-@@ -784,6 +857,27 @@ do
+@@ -858,6 +928,27 @@ do
                  fi
              fi
              ;;
@@ -319,7 +324,7 @@ index 2c2e5cee7..c9c0072c9 100755
          --with-opencv*)
              have_opencv=yes
              if test x$optarg = x
-@@ -1049,6 +1143,48 @@ then
+@@ -1123,6 +1214,48 @@ then
      fi
  fi
  
@@ -368,7 +373,7 @@ index 2c2e5cee7..c9c0072c9 100755
  if test x$mpi_path = x
  then
      mpi_path=$(find_mpi)
-@@ -1123,6 +1259,12 @@ fi
+@@ -1218,6 +1351,12 @@ fi
  if test x$protobuf_path != x; then
      echo PROTOBUF_PATH=$protobuf_path >> $config
  fi
@@ -382,5 +387,5 @@ index 2c2e5cee7..c9c0072c9 100755
      echo MPI_PATH=$mpi_path >> $config
  fi
 -- 
-2.11.1
+1.7.12.4
 
