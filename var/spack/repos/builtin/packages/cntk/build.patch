@@ -1,7 +1,7 @@
-From a7ba364cf8feb26c4f1d2464e2e3f029093147a1 Mon Sep 17 00:00:00 2001
+From b323cab7faf56dfbeaf9928d2d44879f5e2ce696 Mon Sep 17 00:00:00 2001
 From: Benjamin Welton <welton@cs.wisc.edu>
-Date: Thu, 7 Sep 2017 21:39:40 -0400
-Subject: [PATCH] Changing bash for build system
+Date: Thu, 7 Sep 2017 21:52:35 -0400
+Subject: [PATCH 1/1] Temporary patch for CNTK
 
 ---
  Makefile  |  69 +++++++++++++++---------------
