@@ -1,0 +1,76 @@
+From f3aa0cbd47c18d5d7e55786c6e3630ce72b1332b Mon Sep 17 00:00:00 2001
+From: Benjamin Welton <welton@cs.wisc.edu>
+Date: Tue, 12 Sep 2017 19:46:28 -0400
+Subject: [PATCH] Adding cuda example
+
+---
+ examples/CMakeLists.txt         |  5 +++++
+ examples/flann_example_cuda.cpp | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+ create mode 100644 examples/flann_example_cuda.cpp
+
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index e985bb3..03d7e44 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -19,9 +19,14 @@ if (HDF5_FOUND)
+         target_link_libraries(flann_example_cpp ${MPI_LIBRARIES})
+     endif()
+ 
++    add_executable(flann_example_cuda flann_example_cuda.cpp)
++    target_link_libraries(flann_example_cuda flann_cuda)
++    target_link_libraries(flann_example_cuda ${HDF5_LIBRARIES})
+     add_dependencies(examples flann_example_cpp)
++    add_dependencies(examples flann_example_cuda)
+     install (TARGETS flann_example_cpp DESTINATION bin)
+ 
++    install (TARGETS flann_example_cuda DESTINATION bin)
+ 
+     if (USE_MPI AND HDF5_IS_PARALLEL)
+         add_executable(flann_example_mpi flann_example_mpi.cpp)
+diff --git a/examples/flann_example_cuda.cpp b/examples/flann_example_cuda.cpp
+new file mode 100644
+index 0000000..c175106
+--- /dev/null
++++ b/examples/flann_example_cuda.cpp
+@@ -0,0 +1,37 @@
++#define FLANN_USE_CUDA
++#include <flann/flann.hpp>
++#include <flann/io/hdf5.h>
++#include <stdio.h>
++
++using namespace flann;
++
++int main(int argc, char** argv)
++{
++    int nn = 3;
++
++    Matrix<float> dataset;
++    Matrix<float> query;
++    load_from_file(dataset, "dataset.hdf5","dataset");
++    load_from_file(query, "dataset.hdf5","query");
++
++    Matrix<int> indices(new int[query.rows*nn], query.rows, nn);
++    Matrix<float> dists(new float[query.rows*nn], query.rows, nn);
++
++    // construct an randomized kd-tree index using 4 kd-trees
++
++    flann::KDTreeCuda3dIndex<flann::L2<float>> index(dataset, flann::KDTreeCuda3dIndexParams(4));
++//    Index<L2<float> > index(dataset, flann::KDTreeIndexParams(4));
++    index.buildIndex();                                                                                               
++
++    // do a knn search, using 128 checks
++    index.knnSearch(query, indices, dists, nn, flann::SearchParams(128));
++
++    flann::save_to_file(indices,"result.hdf5","result");
++
++    delete[] dataset.ptr();
++    delete[] query.ptr();
++    delete[] indices.ptr();
++    delete[] dists.ptr();
++    
++    return 0;
++}
+-- 
+1.7.12.4
+
