@@ -75,6 +75,7 @@ class Caffe(CMakePackage):
         spec = self.spec
         args = ['-DBLAS={0}'.format('open' if spec['blas'].name == 'openblas'
                 else spec['blas'].name),
+                '-DCUDA_ARCH_NAME=Kepler',
                 '-DCPU_ONLY=%s' % ('~cuda' in spec),
                 '-DUSE_CUDNN=%s' % ('+cuda' in spec),
                 '-DBUILD_python=%s' % ('+python' in spec),
