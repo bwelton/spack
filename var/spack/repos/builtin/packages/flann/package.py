@@ -84,7 +84,7 @@ class Flann(CMakePackage):
 
     # Example uses hdf5.
     depends_on("hdf5", when="+examples")
-
+    patch('cuda_example.patch')
     def patch(self):
         # Fix up the python setup.py call inside the install(CODE
         filter_file("setup.py install",
