@@ -55,7 +55,7 @@ index 0000000..c175106
 +
 +    // construct an randomized kd-tree index using 4 kd-trees
 +
-+    flann::KDTreeCuda3dIndex<flann::L2<float>> index(dataset, flann::KDTreeCuda3dIndexParams(4));
++    flann::KDTreeCuda3dIndex<flann::L2<float> > index(dataset, flann::KDTreeCuda3dIndexParams(4));
 +//    Index<L2<float> > index(dataset, flann::KDTreeIndexParams(4));
 +    index.buildIndex();                                                                                               
 +
