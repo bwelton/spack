@@ -96,6 +96,7 @@ class SuiteSparse(Package):
             'BLAS=%s' % (spec['blas'].libs.ld_flags + (
                 '-lstdc++' if '@4.5.1' in spec else '')),
             'LAPACK=%s' % spec['lapack'].libs.ld_flags,
+            'LD="/usr/bin/ld"'
         ]
 
         # SuiteSparse defaults to using '-fno-common -fexceptions' in
